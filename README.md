@@ -13,7 +13,7 @@ go build -o converter.exe main.go
 + Converts PDF to image in the same folder as `converter.exe` .
 + Create a folder with the same name as the target PDF and store the image file of each page in it.
     + Create a subfolder named `conc`, and output the combined final file in it.
-
++ If the folder already exists, an error will occur and the process will be aborted.
 
 ### With mouse
 

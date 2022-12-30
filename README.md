@@ -29,6 +29,6 @@ Place the bat file you want to use in the same folder as `converter.exe` and dou
 Command line options:
 
 + `--singleTop`: If the PDF has an odd number of pages, leave the first file on a single-page.
-    + By default, leave the last page single-page.s
+    + By default, leave the last page single-page.
 + `--vertical`: When concatenating vertical PDFs, such as Japanese, the pages are aligned from right to left.
 

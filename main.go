@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -20,9 +21,13 @@ func main() {
 }
 
 func run(singleTop bool, vertical bool) int {
-
 	p, _ := os.Executable()
 	root := filepath.Dir(p)
 
-	return convert.Convert(root, singleTop, vertical)
+	err := convert.Convert(root, singleTop, vertical)
+	if err != nil {
+		log.Println(err)
+		return 1
+	}
+	return 0
 }

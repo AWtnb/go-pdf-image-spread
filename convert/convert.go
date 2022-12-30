@@ -13,18 +13,15 @@ import (
 	"github.com/karmdip-mi/go-fitz"
 )
 
-func getFiles(root string) []string {
+func getFiles(root string, ext string) ([]string, error) {
 	var files []string
 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if filepath.Ext(path) == ".pdf" {
+		if filepath.Ext(path) == ext {
 			files = append(files, path)
 		}
 		return nil
 	})
-	if err != nil {
-		fmt.Println(err)
-	}
-	return files
+	return files, err
 }
 
 // https://text.baldanders.info/golang/concatenate-images/
@@ -50,7 +47,7 @@ func max(x int, y int) int {
 	return y
 }
 
-func getFileBasename(name string) string {
+func trimExt(name string) string {
 	return strings.TrimSuffix(name, filepath.Ext(name))
 }
 
@@ -78,7 +75,7 @@ func concImages(lPath string, rPath string, outDir string) error {
 		offset += rect.Dx()
 	}
 
-	outName := fmt.Sprintf("%s-%s", getFileBasename(filepath.Base(lPath)), filepath.Base(rPath))
+	outName := fmt.Sprintf("%s-%s", trimExt(filepath.Base(lPath)), filepath.Base(rPath))
 	outPath := filepath.Join(outDir, outName)
 	file, err := os.Create(outPath)
 	if err != nil {
@@ -107,14 +104,13 @@ func copyFile(path string, destDir string) error {
 	}
 	defer dst.Close()
 
-	_, err = io.Copy(dst, src)
-	if err != nil {
+	if _, err = io.Copy(dst, src); err != nil {
 		return err
 	}
 	return nil
 }
 
-func spreadPages(files []string, outDir string, singleTop bool, vertical bool) error {
+func allocate(files []string, outDir string, singleTop bool, vertical bool) error {
 	pairs := files
 	if len(files)%2 != 0 {
 		if singleTop {
@@ -144,49 +140,54 @@ func spreadPages(files []string, outDir string, singleTop bool, vertical bool) e
 	return nil
 }
 
-func Convert(root string, singleTop bool, vertical bool) int {
-
-	files := getFiles(root)
-	td, err := os.MkdirTemp("", "temp-for-conv")
-	defer os.RemoveAll(td)
-
+func toImage(file string, outDir string) ([]string, error) {
+	pages := []string{}
+	doc, err := fitz.New(file)
 	if err != nil {
-		fmt.Println(err)
-		return 1
+		return pages, err
+	}
+	for i := 0; i < doc.NumPage(); i++ {
+		img, err := doc.Image(i)
+		if err != nil {
+			return pages, err
+		}
+
+		ipath := filepath.Join(outDir, fmt.Sprintf("p%05d.jpg", i+1))
+		f, err := os.Create(ipath)
+		if err != nil {
+			return pages, err
+		}
+		if err := jpeg.Encode(f, img, &jpeg.Options{Quality: 100}); err != nil {
+			return pages, err
+		}
+		defer f.Close()
+
+		pages = append(pages, ipath)
+	}
+	return pages, nil
+}
+
+func Convert(root string, singleTop bool, vertical bool) error {
+	files, err := getFiles(root, ".pdf")
+	if err != nil {
+		return err
 	}
 	for _, file := range files {
-		doc, err := fitz.New(file)
+		outDir := trimExt(file)
+		if err := os.Mkdir(outDir, os.ModePerm); err != nil {
+			return err
+		}
+		pages, err := toImage(file, outDir)
 		if err != nil {
-			fmt.Println(err)
-			return 1
+			return err
 		}
-		pages := []string{}
-		for i := 0; i < doc.NumPage(); i++ {
-			img, err := doc.Image(i)
-			if err != nil {
-				fmt.Println(err)
-				return 1
-			}
-
-			ipath := filepath.Join(td, fmt.Sprintf("p%05d.jpg", i+1))
-			f, err := os.Create(ipath)
-			if err != nil {
-				fmt.Println(err)
-				return 1
-			}
-
-			if err := jpeg.Encode(f, img, &jpeg.Options{Quality: 100}); err != nil {
-				fmt.Println(err)
-				return 1
-			}
-
-			f.Close()
-			pages = append(pages, ipath)
+		concDir := filepath.Join(outDir, "conc")
+		if err := os.Mkdir(concDir, os.ModePerm); err != nil {
+			return err
 		}
-		if err := spreadPages(pages, root, singleTop, vertical); err != nil {
-			fmt.Println(err)
-			return 1
+		if err := allocate(pages, concDir, singleTop, vertical); err != nil {
+			return err
 		}
 	}
-	return 0
+	return nil
 }

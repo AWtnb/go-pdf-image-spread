@@ -2,7 +2,7 @@ package main
 
 import (
 	"flag"
-	"log"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -26,7 +26,7 @@ func run(singleTop bool, vertical bool) int {
 
 	err := convert.Convert(root, singleTop, vertical)
 	if err != nil {
-		log.Println(err)
+		fmt.Println(err)
 		return 1
 	}
 	return 0

@@ -6,6 +6,8 @@ call converter.exe
 
 echo;
 echo;
-echo finished!
+
+if %errorlevel% equ 0 echo finished!
+if %errorlevel% equ 1 echo ERROR!
 echo;
 pause

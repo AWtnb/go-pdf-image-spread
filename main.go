@@ -16,6 +16,10 @@ func main() {
 	)
 	flag.BoolVar(&singleTop, "singleTop", false, "switch to start with non-spread page")
 	flag.BoolVar(&vertical, "vertical", false, "switch to start allocate pages from right to left")
+	flag.Usage = func() {
+		fmt.Println("REPOSITORY: https://github.com/AWtnb/go-pdf-image-spread")
+		flag.PrintDefaults()
+	}
 	flag.Parse()
 	os.Exit(run(singleTop, vertical))
 }

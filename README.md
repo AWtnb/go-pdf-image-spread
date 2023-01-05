@@ -17,7 +17,7 @@ go build -o converter.exe main.go
 
 ### With mouse
 
-Place the bat file you want to use in the same folder as `converter.exe` and double-click it.
+Place the `.bat` file you want to use in the same folder as `converter.exe` and double-click it.
 
 + `horizontal.bat`
 + `horizontal-singletop.bat` (Horizontal PDF. single first page.)
@@ -28,7 +28,7 @@ Place the bat file you want to use in the same folder as `converter.exe` and dou
 
 Command line options:
 
-+ `--singleTop`: If the PDF has an odd number of pages, leave the first file on a single-page.
++ `--singleTop` : If the PDF has an odd number of pages, leave the first file on a single-page.
     + By default, leave the last page single-page.
-+ `--vertical`: When concatenating vertical PDFs, such as Japanese, the pages are aligned from right to left.
++ `--vertical` : When concatenating vertical PDFs, such as Japanese, the pages are aligned from right to left.
 

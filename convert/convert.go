@@ -10,7 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/karmdip-mi/go-fitz"
+	"github.com/gen2brain/go-fitz"
 )
 
 func getFiles(root string, ext string) ([]string, error) {

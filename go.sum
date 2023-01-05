@@ -1,2 +1,2 @@
-github.com/karmdip-mi/go-fitz v0.0.0-20210702102225-a530a79566e9 h1:w2zV18MDGv67JnuHgNQk7CG6ipj9HEBtuZGwy6TrJEE=
-github.com/karmdip-mi/go-fitz v0.0.0-20210702102225-a530a79566e9/go.mod h1:2aHtXmu2gpljEpoBoFMFr+C5GpdHIT8aI1l1UcyvEP4=
+github.com/gen2brain/go-fitz v1.20.2 h1:4FPJCU/ImQ32oojBsYn/+oTkRORxbAhAA+Yw1Fm97MA=
+github.com/gen2brain/go-fitz v1.20.2/go.mod h1:YbQPODTC/UnQ/RK4JyD3zfpDQ19UKiV85nMMT3XpT0s=

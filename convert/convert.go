@@ -174,6 +174,12 @@ func Convert(root string, singleTop bool, vertical bool) error {
 	}
 	for _, file := range files {
 		outDir := trimExt(file)
+		if singleTop {
+			outDir = outDir + "-singletop"
+		}
+		if vertical {
+			outDir = outDir + "-vertical"
+		}
 		if err := os.Mkdir(outDir, os.ModePerm); err != nil {
 			return err
 		}

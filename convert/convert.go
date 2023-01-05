@@ -112,20 +112,19 @@ func copyFile(path string, destDir string) error {
 
 func allocate(files []string, outDir string, singleTop bool, vertical bool) error {
 	pairs := files
-	if len(files)%2 != 0 {
-		if singleTop {
-			top := files[0]
-			if err := copyFile(top, outDir); err != nil {
-				return err
-			}
-			pairs = files[1:]
-		} else {
-			last := files[len(files)-1]
-			if err := copyFile(last, outDir); err != nil {
-				return err
-			}
-			pairs = files[:len(files)-1]
+	if singleTop {
+		top := pairs[0]
+		if err := copyFile(top, outDir); err != nil {
+			return err
 		}
+		pairs = pairs[1:]
+	}
+	if len(pairs)%2 != 0 {
+		last := pairs[len(pairs)-1]
+		if err := copyFile(last, outDir); err != nil {
+			return err
+		}
+		pairs = pairs[:len(pairs)-1]
 	}
 	for i := 0; i < len(pairs); i += 2 {
 		l, r := pairs[i], pairs[i+1]

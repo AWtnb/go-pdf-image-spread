@@ -10,6 +10,7 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/gen2brain/go-fitz"
 )
 
@@ -126,6 +127,10 @@ func allocate(files []string, outDir string, singleTop bool, vertical bool) erro
 		}
 		pairs = pairs[:len(pairs)-1]
 	}
+
+	fmt.Println("\n- concatenating images...")
+	bar := pb.StartNew(len(pairs) / 2)
+
 	for i := 0; i < len(pairs); i += 2 {
 		l, r := pairs[i], pairs[i+1]
 		if vertical {
@@ -135,7 +140,9 @@ func allocate(files []string, outDir string, singleTop bool, vertical bool) erro
 		if err != nil {
 			return err
 		}
+		bar.Increment()
 	}
+	bar.Finish()
 	return nil
 }
 
@@ -145,6 +152,10 @@ func toImage(file string, outDir string) ([]string, error) {
 	if err != nil {
 		return pages, err
 	}
+
+	fmt.Println("\n- converting to image...")
+	bar := pb.StartNew(doc.NumPage())
+
 	for i := 0; i < doc.NumPage(); i++ {
 		img, err := doc.Image(i)
 		if err != nil {
@@ -162,7 +173,9 @@ func toImage(file string, outDir string) ([]string, error) {
 		defer f.Close()
 
 		pages = append(pages, ipath)
+		bar.Increment()
 	}
+	bar.Finish()
 	return pages, nil
 }
 
@@ -172,6 +185,9 @@ func Convert(root string, singleTop bool, vertical bool) error {
 		return err
 	}
 	for _, file := range files {
+
+		fmt.Printf("Processing: %s\n", filepath.Base(file))
+
 		outDir := trimExt(file)
 		if singleTop {
 			outDir = outDir + "-singletop"

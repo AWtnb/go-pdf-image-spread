@@ -33,5 +33,6 @@ func run(singleTop bool, vertical bool) int {
 		fmt.Println(err)
 		return 1
 	}
+	fmt.Println("\nAll pages have been converted! Check `conc` folder inside output folder.")
 	return 0
 }

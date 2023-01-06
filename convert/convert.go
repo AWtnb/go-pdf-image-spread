@@ -186,7 +186,7 @@ func Convert(root string, singleTop bool, vertical bool) error {
 	}
 	for _, file := range files {
 
-		fmt.Printf("Processing: %s\n", filepath.Base(file))
+		fmt.Printf("\nProcessing: %s\n", filepath.Base(file))
 
 		outDir := trimExt(file)
 		if singleTop {

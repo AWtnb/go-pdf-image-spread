@@ -16,12 +16,20 @@ import (
 
 func getFiles(root string, ext string) ([]string, error) {
 	var files []string
-	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
-		if filepath.Ext(path) == ext {
-			files = append(files, path)
+	wd, err := os.Open(root)
+	if err != nil {
+		return files, err
+	}
+	defer wd.Close()
+	names, err := wd.Readdirnames(0)
+	if err != nil {
+		return files, err
+	}
+	for _, file := range names {
+		if filepath.Ext(file) == ext {
+			files = append(files, filepath.Join(root, file))
 		}
-		return nil
-	})
+	}
 	return files, err
 }
 
